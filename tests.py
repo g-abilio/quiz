@@ -1,6 +1,29 @@
 import pytest
 from model import Question
 
+@pytest.fixture
+def multiple_choices_question(): 
+    question = Question(title = 'q1')
+    question.add_choice('a', False)
+    question.add_choice('b', True)
+    question.add_choice('c', False)
+    question.add_choice('d', False)
+    return question
+
+# test of a private method only because of its primary importance to the subject
+def test_just_one_correct_choice_in_multiple_choices_question(multiple_choices_question): 
+    correct_choices = multiple_choices_question._find_correct_choice_ids()
+    assert len(correct_choices) == 1
+
+def test_max_selections_in_multiple_choices_question(multiple_choices_question): 
+    assert multiple_choices_question.max_selections == 1
+
+def test_correct_multiple_choices_question(multiple_choices_question): 
+    correct_selected_choice = multiple_choices_question.correct_selected_choices([2])
+    assert correct_selected_choice == [2]
+    correct_selected_choice = multiple_choices_question.correct_selected_choices([1])
+    assert correct_selected_choice == []    
+
 def test_create_question():
     question = Question(title='q1')
     assert question.id != None
